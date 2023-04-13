@@ -1,0 +1,26 @@
+---
+- name: Configure switches
+  hosts: myhosts
+  gather_facts: no
+  connection: network_cli
+  become: yes
+  become_method: enable
+
+  vars:
+    banner: "Unauthorized access is strictly prohibited!"
+
+  tasks:
+    - name: Configure login banner
+      ios_banner:
+        banner: "{{ banner }}"
+        provider:
+          host: "{{ inventory_hostname }}"
+          username: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          auth_pass: "{{ ansible_password }}"
+          authorize: yes
+      register: result
+
+    - name: Print result
+      debug:
+        var: result
